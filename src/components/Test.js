@@ -1,76 +1,90 @@
 import React, { useState } from "react";
 
-function GuessTheNumber() {
-   const [guess,setguess]=useState(0);
-   const [nbr,setnumb] = useState(generateRandomNumber());
-   const [message,setmsg]= useState("Not yet");
-   const [count,setcount]= useState(0);
-   const [score,setscore]= useState(0);
-   if(count===5){
-    alert("You reached 5tries resetting game minus 1 score");
-    setscore(score-1);
-    resetGame1();
-   }
+function Play() {
+  const [botChoice,setbot]=useState("");
+  const [userChoice,setuser]=useState("");
+  const [score,setscore]=useState(0);
+  const [loading, setLoading] = useState(false);
+  const words = ["Scissors","Paper","Rock"];
+  const randomWord = words[Math.floor(Math.random() * words.length)];
 
-   console.log(nbr);
-   function generateRandomNumber() {
-    return Math.floor(Math.random() * 100) + 1; // Number between 1-100
-}
+ console.log(randomWord);
 
-   function checkGuess(){
-    if(Number(guess)===nbr){
-        setmsg("You got it");
-        setscore(score+1);
-     
+
+
+  const determineWinner = (userChoice, botChoice) => {
+    if (userChoice === botChoice) return "It's a tie!";
+    if (
+      (userChoice === "Scissors" && botChoice === "Paper") ||
+      (userChoice === "Paper" && botChoice === "Rock") ||
+      (userChoice === "Rock" && botChoice === "Scissors")
+    ) {
+      setscore(score+1);
+      return "You win!";
     }
-    setcount(count+1);
-    
-   }
- 
-  
+    setscore(score-1);
+    return "You lose!";
+  };
+function Scissors(){
+   setbot(randomWord);
+   setuser("Scissors");
+    setLoading(true);
 
+setTimeout(() => {
+    const res=determineWinner("Scissors",randomWord);
+    alert(res);
+    setLoading(false);
+}, 2000);
+}
+function Paper(){
+    setbot(randomWord);
+    setuser("Paper");
+    setLoading(true);
 
-   function handleGuessChange(e){
-    setguess(e.target.value)
-   }
+setTimeout(() => {
+    const res=determineWinner("Paper",randomWord);
+    alert(res);
+    setLoading(false);
+}, 2000);
 
-   function resetGame1(){
-     setguess(0);
-     setnumb(generateRandomNumber);
-     setmsg("Not yet");
-     setcount(0);
-     alert("reseted numbers");
-   }
-   function resetGame(){
-    setguess(0);
-    setnumb(generateRandomNumber);
-    setmsg("Not yet");
-    setcount(0);
-    setscore(0);
-    alert("reseted numbers");
-  }
-    return (
-        <>
-        <div style={{ textAlign: "center", padding: "20px" }}>
-            <h1>🎯 Guess the Number</h1>
-            <p>Enter a number between 1 and 100:</p>
-            <input 
-                type="number" 
-                value={guess} 
-                onChange={handleGuessChange} 
-                placeholder="Your guess"
-            />
-            <button onClick={checkGuess}>Submit Guess</button>
-            <button onClick={resetGame} style={{ marginLeft: "10px" }}>Reset</button>
-            <p>{message}</p>
-        </div>
-        <div>
-            <p>Rule: More than 5tries=Elimination and reseting</p>
-            <p>Score: {score}</p>
-        </div>
-         
-        </>
-    );
+}
+function Rock(){
+    setbot(randomWord);
+    setuser("Rock");
+    setLoading(true);
+
+setTimeout(() => {
+    const res=determineWinner("Rock",randomWord);
+    alert(res);
+    setLoading(false);
+}, 2000);
+}
+return (
+    <div className="game-container">
+      <h1 className="title">Choose A Weapon!</h1>
+      <div className="buttons-container">
+        <button className="btn" onClick={Scissors}>Scissors</button>
+        <button className="btn" onClick={Paper}>Paper</button>
+        <button className="btn" onClick={Rock}>Rock</button>
+      </div>
+
+      <div className="game-info">
+        {loading ? (
+          <p className="loading">Loading...</p>
+        ) : (
+          <p className="choices">
+            You chose: {userChoice} | Bot chose: {botChoice}
+          </p>
+        )}
+
+        {!loading && (
+          <h2 className="score">Score: {score}</h2>
+        )}
+      </div>
+    </div>
+  );
 }
 
-export default GuessTheNumber;
+
+
+export default Play;
